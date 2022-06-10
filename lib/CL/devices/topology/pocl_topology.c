@@ -205,6 +205,36 @@ exit_destroy:
 }
 
 // #ifdef HWLOC
+#elif defined(__APPLE__)
+#include <sys/sysctl.h>
+int
+pocl_topology_detect_device_info (cl_device_id device)
+{
+  int global_cache_linesize;
+  size_t global_cache_linesize_len = 0;
+  sysctlbyname("hw.cachelinesize", &global_cache_linesize, &global_cache_linesize_len, NULL, 0);
+  device->global_mem_cacheline_size = global_cache_linesize;
+  device->global_mem_cache_type = 0x2; // CL_READ_WRITE_CACHE, without including all of CL/cl.h
+
+  /* global mem cache size */
+  int global_mem_cache_size;
+  size_t global_mem_cache_size_len = 0;
+  sysctlbyname("hw.l1dcachesize", &global_mem_cache_size, &global_mem_cache_size_len, NULL, 0);
+  device->global_mem_cache_size = global_mem_cache_size;
+
+  /* global_mem_size */
+  int global_mem_size;
+  size_t global_mem_size_len = 0;
+  sysctlbyname("hw.memsize", &global_mem_size, &global_mem_size_len, NULL, 0);
+  device->global_mem_size = global_mem_size;
+
+  /* max_compute_units */
+  int compute_units;
+  size_t compute_units_len = 0;
+  sysctlbyname("hw.logicalcpu", &compute_units, &compute_units_len, NULL, 0);
+  device->max_compute_units = compute_units;
+  return 0;
+}
 #elif defined(__linux__) || defined(__ANDROID__)
 
 #define L3_CACHE_SIZE "/sys/devices/system/cpu/cpu0/cache/index3/size"
