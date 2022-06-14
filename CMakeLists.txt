@@ -554,7 +554,8 @@ if(UNIX)
   # don't allow implicit function declarations
   set(CMAKE_REQUIRED_FLAGS "-std=c99")
   if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-    set(CMAKE_REQUIRED_LIBRARIES "rt")
+    find_library(RT_LIBRARY rt)
+    set(CMAKE_REQUIRED_LIBRARIES ${RT_LIBRARY})
   endif ()
 
   CHECK_SYMBOL_EXISTS("fork"
