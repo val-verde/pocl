@@ -457,8 +457,14 @@ int pocl_llvm_build_program(cl_program program,
   LangOptions *la = pocl_build.getLangOpts();
   PreprocessorOptions &po = pocl_build.getPreprocessorOpts();
 
+#ifndef LLVM_OLDER_THAN_15_0
+  la->setLangDefaults(*la,
+#else
   pocl_build.setLangDefaults(*la,
-#ifndef LLVM_OLDER_THAN_10_0
+#endif
+#ifndef LLVM_OLDER_THAN_15_0
+                             clang::Language::OpenCL,
+#elif !defined LLVM_OLDER_THAN_10_0
                              clang::InputKind(clang::Language::OpenCL),
 #else
                              clang::InputKind::OpenCL,
