@@ -28,6 +28,9 @@
 #include "CompilerWarnings.h"
 IGNORE_COMPILER_WARNING("-Wunused-parameter")
 
+#ifndef LLVM_OLDER_THAN_15_0
+#include "llvm/Analysis/LoopInfo.h"
+#endif
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Instructions.h"

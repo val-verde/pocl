@@ -28,6 +28,9 @@ IGNORE_COMPILER_WARNING("-Wunused-parameter")
 
 #include "pocl.h"
 
+#ifndef LLVM_OLDER_THAN_15_0
+#include "llvm/Analysis/LoopInfo.h"
+#endif
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/Module.h"
