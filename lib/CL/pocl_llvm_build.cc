@@ -89,13 +89,20 @@ POP_COMPILER_DIAGS
 
 
 
-//#define DEBUG_POCL_LLVM_API
+#define DEBUG_POCL_LLVM_API
 
 #if defined(DEBUG_POCL_LLVM_API) && defined(NDEBUG)
 #undef NDEBUG
 #include <cassert>
 #endif
 
+const char *
+get_clang_path()
+{
+  const char *CC = getenv("CC");
+
+  return CC ?: CLANG;
+}
 
 // Unlink input sources
 static inline int
@@ -518,10 +525,10 @@ int pocl_llvm_build_program(cl_program program,
   }
   if (ClangResourceDir.empty()) {     
 #ifndef LLVM_OLDER_THAN_9_0
-    ClangResourceDir = driver::Driver::GetResourcesPath(CLANG);
+    ClangResourceDir = driver::Driver::GetResourcesPath(get_clang_path());
 #else
     DiagnosticsEngine Diags{new DiagnosticIDs, new DiagnosticOptions};
-    driver::Driver TheDriver(CLANG, "", Diags);
+    driver::Driver TheDriver(get_clang_path(), "", Diags);
     ClangResourceDir = TheDriver.ResourceDir;
 #endif
   }
@@ -1042,7 +1049,7 @@ int pocl_invoke_clang(cl_device_id Device, const char** Args) {
 
   DiagnosticsEngine Diags(DiagID, &*DiagOpts, DiagClient);
 
-  driver::Driver TheDriver(CLANG, Device->llvm_target_triplet, Diags);
+  driver::Driver TheDriver(get_clang_path(), Device->llvm_target_triplet, Diags);
 
   const char **ArgsEnd = Args;
   while (*ArgsEnd++ != nullptr) {}

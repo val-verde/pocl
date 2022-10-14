@@ -729,7 +729,7 @@ int pocl_llvm_codegen(cl_device_id Device, cl_program program, void *Modp,
                       AsmStr.size(), nullptr);
   pocl_mk_tempname(ObjFileName, "/tmp/pocl-obj", ".o", nullptr);
 
-  const char *Args[] = {CLANG, AsmFileName, "-c", "-o", ObjFileName, nullptr};
+  const char *Args[] = {get_clang_path(), AsmFileName, "-c", "-o", ObjFileName, nullptr};
   int Res = pocl_invoke_clang(Device, Args);
 
   if (Res == 0) {

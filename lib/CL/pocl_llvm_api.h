@@ -67,6 +67,9 @@ public:
   ~PoclCompilerMutexGuard();
 };
 
+
+const char *get_clang_path();
+
 llvm::Module *parseModuleIR (const char *path, llvm::LLVMContext *c);
 void writeModuleIRtoString(const llvm::Module *mod, std::string& dest);
 llvm::Module *parseModuleIRMem (const char *input_stream, size_t size,
